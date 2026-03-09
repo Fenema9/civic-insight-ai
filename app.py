@@ -13,17 +13,23 @@ for decision-makers and residents.
 """)
 # Load data
 @st.cache_data
-def load_data():
-    df = pd.read_csv("data/311.csv", low_memory=False)
+
+def load_data(uploaded_file):
+    df = pd.read_csv(uploaded_file, low_memory=False)
     df["Created Date"] = pd.to_datetime(df["Created Date"], errors="coerce")
     df["Closed Date"] = pd.to_datetime(df["Closed Date"], errors="coerce")
     df["resolution_hours"] = (
-        (df["Closed Date"] - df["Created Date"])
-        .dt.total_seconds() / 3600
-    )
+        df["Closed Date"] - df["Created Date"]
+    ).dt.total_seconds() / 3600
     return df
 
-df = load_data()
+uploaded_file = st.file_uploader("Upload 311 CSV file", type=["csv"])
+
+if uploaded_file is not None:
+    df = load_data(uploaded_file)
+else:
+    st.warning("Please upload a CSV file to start analysis.")
+    st.stop()
 # Sidebar filters
 st.sidebar.header("Filters")
 
