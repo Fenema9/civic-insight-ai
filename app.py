@@ -22,14 +22,12 @@ def load_data(uploaded_file):
         df["Closed Date"] - df["Created Date"]
     ).dt.total_seconds() / 3600
     return df
-
-uploaded_file = st.file_uploader("Upload 311 CSV file", type=["csv"])
+uploaded_file = st.file_uploader("Upload your own 311 CSV file (optional)", type=["csv"])
 
 if uploaded_file is not None:
     df = load_data(uploaded_file)
 else:
-    st.warning("Please upload a CSV file to start analysis.")
-    st.stop()
+    df = load_data("data/311_sample.csv")
 # Sidebar filters
 st.sidebar.header("Filters")
 
